@@ -330,4 +330,49 @@ public class SuperList<T extends Comparable<T>> implements List<T> {
 		}
 
 	}
+
+	protected Object clone() throws CloneNotSupportedException {
+		List<T> l = new SuperList<T>();
+		l.addAll(this);
+		return l;
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object obj) {
+		Collection<T> c = (Collection<T>) obj;
+		if (c.size() != mSize)
+			return false;
+		Iterator<T> t1 = this.iterator();
+		Iterator<T> t2 = c.iterator();
+		while (t1.hasNext()) {
+			if (!t1.next().equals(t2.next()))
+				return false;
+		}
+		return true;
+	}
+
+	public int hashCode() {
+		int hashCode = 1;
+		Iterator<T> i = this.iterator();
+		while (i.hasNext()) {
+			T obj = i.next();
+			hashCode = 31 * hashCode + (obj == null ? 0 : obj.hashCode());
+		}
+		return hashCode;
+	}
+
+	public String toString() {
+		if (mSize == 0)
+			return "[]";
+		Iterator<T> iter = iterator();
+		StringBuilder out = new StringBuilder();
+		out.append("[");
+		for (int i = 0; i < mSize - 1; i++) {
+			out.append(iter.next());
+			out.append(", ");
+		}
+		out.append(iter.next());
+		out.append("]");
+		return out.toString();
+	}
 }

@@ -367,4 +367,37 @@ public class SuperListTest {
 		assertEquals("d", l.get(2));
 		assertEquals("b", l.get(3));
 	}
+
+	@Test
+	public void testToString() {
+		l.add("a");
+		l.add("b");
+		l.add("c");
+		assertEquals("[a, b, c]", l.toString());
+	}
+
+	@Test
+	public void testEquals() {
+		l.add("a");
+		l.add("b");
+		l.add("c");
+		List<String> c = new ArrayList<String>();
+		c.add("a");
+		c.add("b");
+		assertFalse(l.equals(c));
+		assertFalse(c.equals(l));
+		c.add("c");
+		assertTrue(l.equals(c));
+		assertTrue(c.equals(l));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testClone() throws CloneNotSupportedException {
+		l.add("a");
+		l.add("b");
+		SuperList<String> l2 = (SuperList<String>) l.clone();
+		l2.add("c");
+		assertEquals(2, l.size());
+	}
 }
