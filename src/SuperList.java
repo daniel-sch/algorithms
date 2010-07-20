@@ -1,124 +1,333 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
+import java.util.NoSuchElementException;
 
 public class SuperList<T extends Comparable<T>> implements List<T> {
+	private Item mFirst;
+	private Item mLast;
+	private int mSize;
 
 	public boolean add(T e) {
-		// TODO Auto-generated method stub
-		return false;
+		if (mSize == 0)
+			mLast = mFirst = new Item(null, null, e);
+		else
+			mLast = mLast.next = new Item(mLast, null, e);
+
+		mSize++;
+		return true;
 	}
 
 	public void add(int index, T element) {
-		// TODO Auto-generated method stub
+		if (index < 0 || index > mSize)
+			throw new IndexOutOfBoundsException();
+		// delegate to add(T e) if possible
+		if (mSize == 0 || index == mSize) {
+			this.add(element);
+			return;
+		}
 
+		Item cur = getItem(index);
+		addItemBefore(cur, element);
+
+		mSize++;
 	}
 
 	public boolean addAll(Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
+		if (c.isEmpty())
+			return false;
+		for (T o : c)
+			add(o);
+
+		return true;
 	}
 
 	public boolean addAll(int index, Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
+		if (index < 0 || index > mSize)
+			throw new IndexOutOfBoundsException();
+		if (c.isEmpty())
+			return false;
+
+		Item cur = getItem(index);
+		for (T o : c) {
+			addItemBefore(cur, o);
+			mSize++;
+		}
+		return true;
 	}
 
 	public void clear() {
-		// TODO Auto-generated method stub
-
+		mSize = 0;
+		mFirst = mLast = null;
 	}
 
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return findItem(o) != null;
 	}
 
 	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		for (Object o : c) {
+			if (!this.contains(o))
+				return false;
+		}
+		return true;
 	}
 
 	public T get(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		if (index < 0 || index > mSize - 1)
+			throw new IndexOutOfBoundsException();
+		return getItem(index).data;
 	}
 
 	public int indexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+		Item cur = mFirst;
+		for (int i = 0; i < mSize; i++) {
+			if (o == null ? cur.data == null : o.equals(cur.data))
+				return i;
+			cur = cur.next;
+		}
+		return -1;
 	}
 
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return (mSize == 0);
 	}
 
 	public Iterator<T> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return listIterator();
 	}
 
 	public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+		Item cur = mLast;
+		for (int i = mSize - 1; i >= 0; i--) {
+			if (o == null ? cur.data == null : o.equals(cur.data))
+				return i;
+			cur = cur.prev;
+		}
+		return -1;
 	}
 
 	public ListIterator<T> listIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SuperListIterator(mFirst, 0, this);
 	}
 
 	public ListIterator<T> listIterator(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		if (index < 0 || index > mSize)
+			throw new IndexOutOfBoundsException();
+		return new SuperListIterator(getItem(index), index, this);
 	}
 
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		Item i = findItem(o);
+		if (i == null)
+			return false;
+
+		removeItem(i);
+		mSize--;
+		return true;
 	}
 
 	public T remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		if (index < 0 || index > mSize - 1)
+			throw new IndexOutOfBoundsException();
+
+		Item i = getItem(index);
+		removeItem(i);
+		mSize--;
+		return i.data;
 	}
 
 	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean ret = false;
+		for (Object o : c)
+			ret |= remove(o);
+		return ret;
 	}
 
 	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean ret = false;
+		Item cur = mFirst;
+		do {
+			if (!c.contains(cur.data)) {
+				removeItem(cur);
+				mSize--;
+				ret = true;
+			}
+		} while ((cur = cur.next) != null);
+		return ret;
 	}
 
 	public T set(int index, T element) {
-		// TODO Auto-generated method stub
-		return null;
+		if (index < 0 || index > mSize - 1)
+			throw new IndexOutOfBoundsException();
+
+		Item i = getItem(index);
+		T d = i.data;
+		i.data = element;
+		return d;
 	}
 
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return mSize;
 	}
 
 	public List<T> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		if (fromIndex < 0 || toIndex > mSize || fromIndex > toIndex)
+			throw new IndexOutOfBoundsException();
+
+		// doesn't implement this method for now, because it's to difficult
+		throw new UnsupportedOperationException();
 	}
 
 	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		Object[] a = new Object[mSize];
+		Item cur = mFirst;
+		for (int i = 0; i < mSize; i++) {
+			a[i] = cur.data;
+			cur = cur.next;
+		}
+		return a;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <E> E[] toArray(E[] a) {
-		// TODO Auto-generated method stub
+		// dirty dirty hack
+		List<E> l = new ArrayList<E>(mSize);
+		for (T e : this)
+			l.add((E) e);
+		return l.toArray(a);
+	}
+
+	private Item getItem(int index) {
+		Item cur = mFirst;
+		for (int i = 0; i < index; i++) {
+			cur = cur.next;
+		}
+		return cur;
+	}
+
+	private Item findItem(Object o) {
+		Item cur = mFirst;
+		do {
+			if (o == null ? cur.data == null : o.equals(cur.data))
+				return cur;
+		} while ((cur = cur.next) != null);
 		return null;
 	}
 
+	private void removeItem(Item o) {
+		if (o.prev == null)
+			mFirst = o.next;
+		else
+			o.prev.next = o.next;
+
+		if (o.next == null)
+			mLast = o.prev;
+		else
+			o.next.prev = o.prev;
+	}
+
+	private void addItemBefore(Item o, T element) {
+		if (o == null)
+			add(element);
+		else if (o.prev == null)
+			mFirst = mFirst.prev = new Item(null, mFirst, element);
+		else {
+			Item n = new Item(o.prev, o, element);
+			o.prev.next = n;
+			o.prev = n;
+		}
+	}
+
+	private class Item {
+		Item prev;
+		Item next;
+		T data;
+
+		Item(Item prev, Item next, T data) {
+			this.prev = prev;
+			this.next = next;
+			this.data = data;
+		}
+	}
+
+	private class SuperListIterator implements ListIterator<T> {
+		private Item cur;
+		private SuperList<T> list;
+		private int index;
+		private Item last;
+
+		public SuperListIterator(Item i, int index, SuperList<T> l) {
+			cur = i;
+			this.index = index;
+			list = l;
+		}
+
+		public void add(T e) {
+			last = null;
+			list.addItemBefore(cur, e);
+			list.mSize++;
+			index++;
+		}
+
+		public boolean hasNext() {
+			return cur != null;
+		}
+
+		public boolean hasPrevious() {
+			if (cur == null && list.size() > 0)
+				return true;
+			return cur.prev != null;
+		}
+
+		public T next() {
+			if (cur == null)
+				throw new NoSuchElementException();
+
+			index++;
+			T d = cur.data;
+			last = cur;
+			cur = cur.next;
+			return d;
+		}
+
+		public int nextIndex() {
+			return index + 1;
+		}
+
+		public T previous() {
+			if (cur == null)
+				cur = list.mLast;
+			else
+				cur = cur.prev;
+
+			if (cur == null)
+				throw new NoSuchElementException();
+
+			index--;
+			last = cur;
+			return cur.data;
+		}
+
+		public int previousIndex() {
+			return index - 1;
+		}
+
+		public void remove() {
+			if (last == null)
+				throw new IllegalStateException();
+			list.removeItem(last);
+			last = null;
+			index -= 2;
+		}
+
+		public void set(T e) {
+			if (last == null)
+				throw new IllegalStateException();
+			last.data = e;
+		}
+
+	}
 }
