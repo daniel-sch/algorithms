@@ -77,6 +77,17 @@ public class SuperListTest {
 	}
 
 	@Test
+	public void testBubblesort() {
+		l.add("d");
+		l.add("e");
+		l.add("a");
+		l.add("c");
+		l.add("b");
+		l.bubbleSort();
+		assertEquals("[a, b, c, d, e]", l.toString());
+	}
+
+	@Test
 	public void testCanAdd() {
 		assertTrue(l.add("foo"));
 		assertEquals("foo", l.get(0));

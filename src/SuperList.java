@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class SuperList<T extends Comparable<T>> extends
 		AbstractSequentialList<T> implements List<T>, Queue<T>, Deque<T> {
-	private class Item {
+	private class Item implements Comparable<Item> {
 		T data;
 		Item next;
 		Item prev;
@@ -18,6 +18,11 @@ public class SuperList<T extends Comparable<T>> extends
 			this.prev = prev;
 			this.next = next;
 			this.data = data;
+		}
+
+		@Override
+		public int compareTo(Item o) {
+			return data.compareTo(o.data);
 		}
 	}
 
@@ -166,6 +171,25 @@ public class SuperList<T extends Comparable<T>> extends
 	@Override
 	public void addLast(T e) {
 		add(e);
+	}
+
+	public void bubbleSort() {
+		if (mSize <= 1)
+			return;
+
+		Item cur;
+		boolean swapped = true;
+		while (swapped) {
+			swapped = false;
+			cur = mFirst;
+			while (cur.next != null) {
+				if (cur.compareTo(cur.next) > 0) {
+					swapItemWithNext(cur);
+					swapped = true;
+				} else
+					cur = cur.next;
+			}
+		}
 	}
 
 	@Override
@@ -369,6 +393,24 @@ public class SuperList<T extends Comparable<T>> extends
 			o.next.prev = o.prev;
 
 		mSize--;
+	}
+
+	private void swapItemWithNext(Item a) {
+		Item b = a.next;
+		Item after = b.next;
+		Item before = a.prev;
+		a.prev = b;
+		b.next = a;
+		if (after == null)
+			mLast = a;
+		else
+			after.prev = a;
+		a.next = after;
+		if (before == null)
+			mFirst = b;
+		else
+			before.next = b;
+		b.prev = before;
 	}
 
 	@Override
