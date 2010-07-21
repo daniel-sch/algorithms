@@ -400,4 +400,67 @@ public class SuperListTest {
 		l2.add("c");
 		assertEquals(2, l.size());
 	}
+
+	@Test
+	public void testSublist() {
+		l.add("a");
+		l.add("b");
+		l.add("c");
+		List<String> sl = l.subList(0, 2);
+		assertEquals(2, sl.size());
+		assertEquals("a", sl.get(0));
+		ListIterator<String> i = sl.listIterator();
+		assertEquals("a", i.next());
+		assertFalse(i.hasNext());
+		i.remove();
+		assertEquals("b", l.get(0));
+	}
+
+	@Test
+	public void testElement() {
+		try {
+			l.element();
+			fail("l.element() should throw excepton!");
+		} catch (NoSuchElementException e) {
+		}
+		l.add("a");
+		l.add("b");
+		assertEquals("a", l.element());
+	}
+
+	@Test
+	public void testOffer() {
+		assertTrue(l.offer("a"));
+		assertEquals("a", l.get(0));
+		assertEquals(1, l.size());
+	}
+
+	@Test
+	public void testPeek() {
+		assertNull(l.peek());
+		l.add("a");
+		l.add("b");
+		assertEquals("a", l.peek());
+	}
+
+	@Test
+	public void testPoll() {
+		l.add("a");
+		l.add("b");
+		assertEquals("a", l.poll());
+		assertEquals("b", l.poll());
+		assertNull(l.poll());
+	}
+
+	@Test
+	public void testRemove() {
+		l.add("a");
+		l.add("b");
+		assertEquals("a", l.remove());
+		assertEquals("b", l.remove());
+		try {
+			l.remove();
+		} catch (NoSuchElementException e) {
+		}
+	}
 }
