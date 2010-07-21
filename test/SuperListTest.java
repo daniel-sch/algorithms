@@ -226,6 +226,17 @@ public class SuperListTest {
 	}
 
 	@Test
+	public void testInsertionsort() {
+		l.add("d");
+		l.add("e");
+		l.add("a");
+		l.add("c");
+		l.add("b");
+		l.insertionSort();
+		assertEquals("[a, b, c, d, e]", l.toString());
+	}
+
+	@Test
 	public void testIsEmpty() {
 		assertTrue(l.isEmpty());
 		l.add("foo");

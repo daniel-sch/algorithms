@@ -222,6 +222,27 @@ public class SuperList<T extends Comparable<T>> extends
 		return mLast.data;
 	}
 
+	public void insertionSort() {
+		if (mSize <= 1)
+			return;
+
+		Item cur = mFirst;
+		while (cur.next != null) {
+			cur = cur.next;
+			T curData = cur.data;
+			removeItem(cur);
+			Item insertPos = cur.prev;
+
+			while (insertPos != null && curData.compareTo(insertPos.data) < 0)
+				insertPos = insertPos.prev;
+
+			if (insertPos == null)
+				addItemBefore(mFirst, curData);
+			else
+				addItemBefore(insertPos.next, curData);
+		}
+	}
+
 	@Override
 	public int lastIndexOf(Object o) {
 		Item cur = mLast;
