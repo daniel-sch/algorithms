@@ -184,7 +184,9 @@ public class SuperList<T extends Comparable<T>> extends
 			cur = mFirst;
 			while (cur.next != null) {
 				if (cur.compareTo(cur.next) > 0) {
-					swapItemWithNext(cur);
+					T tmp = cur.data;
+					cur.data = cur.next.data;
+					cur.next.data = tmp;
 					swapped = true;
 				} else
 					cur = cur.next;
@@ -414,24 +416,6 @@ public class SuperList<T extends Comparable<T>> extends
 			o.next.prev = o.prev;
 
 		mSize--;
-	}
-
-	private void swapItemWithNext(Item a) {
-		Item b = a.next;
-		Item after = b.next;
-		Item before = a.prev;
-		a.prev = b;
-		b.next = a;
-		if (after == null)
-			mLast = a;
-		else
-			after.prev = a;
-		a.next = after;
-		if (before == null)
-			mFirst = b;
-		else
-			before.next = b;
-		b.prev = before;
 	}
 
 	@Override
