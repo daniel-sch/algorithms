@@ -1,4 +1,5 @@
 import java.util.AbstractSequentialList;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
@@ -146,8 +147,10 @@ public class SuperList<T extends Comparable<T>> extends
 		}
 	}
 
+	private static final int INSERTIONSORT_THRESHOLD = 6;
 	private Item mFirst;
 	private Item mLast;
+
 	private int mSize;
 
 	public SuperList() {
@@ -177,20 +180,20 @@ public class SuperList<T extends Comparable<T>> extends
 		if (mSize <= 1)
 			return;
 
-		Item cur;
-		boolean swapped = true;
-		while (swapped) {
-			swapped = false;
-			cur = mFirst;
+		Item end = mLast;
+		while (end != mFirst) {
+			Item cur = mFirst;
+			Item newEnd = mFirst;
 			while (cur.next != null) {
 				if (cur.compareTo(cur.next) > 0) {
 					T tmp = cur.data;
 					cur.data = cur.next.data;
 					cur.next.data = tmp;
-					swapped = true;
+					newEnd = cur;
 				} else
 					cur = cur.next;
 			}
+			end = newEnd;
 		}
 	}
 
@@ -231,9 +234,12 @@ public class SuperList<T extends Comparable<T>> extends
 		Item cur = mFirst;
 		while (cur.next != null) {
 			cur = cur.next;
+			if (cur.compareTo(cur.prev) > 0)
+				continue;
+
 			T curData = cur.data;
 			removeItem(cur);
-			Item insertPos = cur.prev;
+			Item insertPos = cur.prev.prev;
 
 			while (insertPos != null && curData.compareTo(insertPos.data) < 0)
 				insertPos = insertPos.prev;
@@ -266,6 +272,40 @@ public class SuperList<T extends Comparable<T>> extends
 		if (index < 0 || index > mSize)
 			throw new IndexOutOfBoundsException();
 		return new SuperListIterator(getItem(index), index, this);
+	}
+
+	public void mergeSort() {
+		if (mSize <= 1)
+			return;
+
+		ArrayList<SuperList<T>> lists = new ArrayList<SuperList<T>>((mSize
+				+ INSERTIONSORT_THRESHOLD - 1)
+				/ INSERTIONSORT_THRESHOLD);
+
+		Iterator<T> iter = iterator();
+
+		while (iter.hasNext()) {
+			SuperList<T> tmp = new SuperList<T>();
+			for (int i = 0; i < INSERTIONSORT_THRESHOLD && iter.hasNext(); i++)
+				tmp.add(iter.next());
+
+			tmp.insertionSort();
+			lists.add(tmp);
+		}
+
+		while (lists.size() > 1) {
+			ArrayList<SuperList<T>> tempLists = new ArrayList<SuperList<T>>(
+					(lists.size() + 1) / 2);
+			for (int i = 0; i < lists.size() / 2; i++)
+				tempLists.add(merge(lists.get(i * 2), lists.get(i * 2 + 1)));
+			if (lists.size() % 2 == 1)
+				tempLists.add(lists.get(lists.size() - 1));
+			lists = tempLists;
+		}
+
+		SuperList<T> res = lists.get(0);
+		this.mFirst = res.mFirst;
+		this.mLast = res.mLast;
 	}
 
 	@Override
@@ -385,18 +425,21 @@ public class SuperList<T extends Comparable<T>> extends
 		if (mSize <= 1)
 			return;
 
-		Item insertPos = mFirst;
-		while (insertPos.next != mLast) {
-			Item cur = insertPos;
-			Item searchPos = insertPos;
+		SuperList<T> newList = new SuperList<T>();
+		while (mSize > 0) {
+			Item cur = mFirst;
+			Item searchPos = cur.next;
+
 			while (searchPos != null) {
 				if (cur.compareTo(searchPos) > 0)
 					cur = searchPos;
 				searchPos = searchPos.next;
 			}
+			newList.add(cur.data);
 			removeItem(cur);
-			addItemBefore(insertPos, cur.data);
 		}
+		mFirst = newList.mFirst;
+		mLast = newList.mLast;
 	}
 
 	@Override
@@ -420,12 +463,50 @@ public class SuperList<T extends Comparable<T>> extends
 		mSize++;
 	}
 
+	private void append(SuperList<T> o) {
+		mLast.next = o.mFirst;
+		o.mFirst.prev = mLast;
+		mLast = o.mLast;
+		mSize += o.mSize;
+	}
+
 	private Item getItem(int index) {
 		Item cur = mFirst;
 		for (int i = 0; i < index; i++) {
 			cur = cur.next;
 		}
 		return cur;
+	}
+
+	private SuperList<T> merge(SuperList<T> a, SuperList<T> b) {
+		// the bigger List (the last element) should always be "a"
+		if (a.mLast.compareTo(b.mLast) < 0) {
+			SuperList<T> tmp = a;
+			a = b;
+			b = tmp;
+		}
+		// if a is completely bigger then b, just concatenate them
+		if (a.mFirst.compareTo(b.mLast) > 0) {
+			b.append(a);
+			return b;
+		}
+
+		Item curA = a.mFirst;
+		Item curB = b.mFirst;
+		while (curA != null && curB != null) {
+			if ((curA).compareTo(curB) > 0) {
+				T d = curB.data;
+				b.removeItem(curB);
+				a.addItemBefore(curA, d);
+				curB = curB.next;
+			} else
+				curA = curA.next;
+		}
+
+		if (curB != null)
+			a.append(b);
+
+		return a;
 	}
 
 	private void quickSort_int(Item start, Item end) {

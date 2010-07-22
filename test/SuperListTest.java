@@ -391,6 +391,33 @@ public class SuperListTest {
 	}
 
 	@Test
+	public void testMergesort() {
+		l.add("d");
+		l.add("e");
+		l.add("a");
+		l.add("c");
+		l.add("b");
+		l.mergeSort();
+		assertEquals("[a, b, c, d, e]", l.toString());
+	}
+
+	@Test
+	public void testMergesortLong() {
+		l.add("f");
+		l.add("g");
+		l.add("i");
+		l.add("h");
+		l.add("j");
+		l.add("d");
+		l.add("e");
+		l.add("a");
+		l.add("c");
+		l.add("b");
+		l.mergeSort();
+		assertEquals("[a, b, c, d, e, f, g, h, i, j]", l.toString());
+	}
+
+	@Test
 	public void testOffer() {
 		assertTrue(l.offer("a"));
 		assertEquals("a", l.get(0));

@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class PerformanceTest {
@@ -34,10 +33,26 @@ public class PerformanceTest {
 		System.out.println("Quicksort: "
 				+ (System.currentTimeMillis() - quickStart) + "ms");
 
+		SuperList<Integer> lMerge = new SuperList<Integer>(l);
+		long mergeStart = System.currentTimeMillis();
+		lMerge.mergeSort();
+		System.out.println("Mergesort: "
+				+ (System.currentTimeMillis() - mergeStart) + "ms");
+
 		long referenceStart = System.currentTimeMillis();
 		Collections.sort(l);
 		System.out.println("Referenzimplementierung: "
 				+ (System.currentTimeMillis() - referenceStart) + "ms");
 
+		if(!l.equals(lBubble))
+			System.out.println("Bubblesort failed!");
+		if(!l.equals(lInsertion))
+			System.out.println("Insertionsort failed!");
+		if(!l.equals(lSelection))
+			System.out.println("Selectionsort failed!");
+		if(!l.equals(lQuick))
+			System.out.println("Quicksort failed!");
+		if(!l.equals(lMerge))
+			System.out.println("Mergesort failed!");
 	}
 }
