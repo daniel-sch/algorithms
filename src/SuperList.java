@@ -336,6 +336,12 @@ public class SuperList<T extends Comparable<T>> extends
 		addFirst(e);
 	}
 
+	public void quickSort() {
+		if (mSize <= 1)
+			return;
+		quickSort_int(mFirst, mLast);
+	}
+
 	@Override
 	public T remove() {
 		if (mSize == 0)
@@ -420,6 +426,25 @@ public class SuperList<T extends Comparable<T>> extends
 			cur = cur.next;
 		}
 		return cur;
+	}
+
+	private void quickSort_int(Item start, Item end) {
+		Item before = start.prev;
+		Item after = end.next;
+		Item pivot = start;
+		Item cur = start.next;
+		while (cur != after) {
+			if (cur.compareTo(pivot) < 0) {
+				T d = cur.data;
+				removeItem(cur);
+				addItemBefore(pivot, d);
+			}
+			cur = cur.next;
+		}
+		if (pivot.prev != before)
+			quickSort_int(before == null ? mFirst : before.next, pivot.prev);
+		if (pivot.next != after)
+			quickSort_int(pivot.next, after == null ? mLast : after.prev);
 	}
 
 	private void removeItem(Item o) {

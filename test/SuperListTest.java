@@ -432,6 +432,17 @@ public class SuperListTest {
 	}
 
 	@Test
+	public void testQuicksort() {
+		l.add("d");
+		l.add("e");
+		l.add("a");
+		l.add("c");
+		l.add("b");
+		l.quickSort();
+		assertEquals("[a, b, c, d, e]", l.toString());
+	}
+
+	@Test
 	public void testRemove() {
 		l.add("a");
 		l.add("b");

@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class PerformanceTest {
@@ -22,8 +24,20 @@ public class PerformanceTest {
 
 		SuperList<Integer> lSelection = new SuperList<Integer>(l);
 		long selectionStart = System.currentTimeMillis();
-		lSelection.insertionSort();
+		lSelection.selectionSort();
 		System.out.println("Selectionsort: "
 				+ (System.currentTimeMillis() - selectionStart) + "ms");
+
+		SuperList<Integer> lQuick = new SuperList<Integer>(l);
+		long quickStart = System.currentTimeMillis();
+		lQuick.quickSort();
+		System.out.println("Quicksort: "
+				+ (System.currentTimeMillis() - quickStart) + "ms");
+
+		long referenceStart = System.currentTimeMillis();
+		Collections.sort(l);
+		System.out.println("Referenzimplementierung: "
+				+ (System.currentTimeMillis() - referenceStart) + "ms");
+
 	}
 }
