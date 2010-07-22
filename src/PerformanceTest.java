@@ -19,5 +19,11 @@ public class PerformanceTest {
 		lInsertion.insertionSort();
 		System.out.println("Insertionsort: "
 				+ (System.currentTimeMillis() - insertionStart) + "ms");
+
+		SuperList<Integer> lSelection = new SuperList<Integer>(l);
+		long selectionStart = System.currentTimeMillis();
+		lSelection.insertionSort();
+		System.out.println("Selectionsort: "
+				+ (System.currentTimeMillis() - selectionStart) + "ms");
 	}
 }

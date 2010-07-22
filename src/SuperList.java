@@ -375,6 +375,24 @@ public class SuperList<T extends Comparable<T>> extends
 		return false;
 	}
 
+	public void selectionSort() {
+		if (mSize <= 1)
+			return;
+
+		Item insertPos = mFirst;
+		while (insertPos.next != mLast) {
+			Item cur = insertPos;
+			Item searchPos = insertPos;
+			while (searchPos != null) {
+				if (cur.compareTo(searchPos) > 0)
+					cur = searchPos;
+				searchPos = searchPos.next;
+			}
+			removeItem(cur);
+			addItemBefore(insertPos, cur.data);
+		}
+	}
+
 	@Override
 	public int size() {
 		return mSize;
