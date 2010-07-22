@@ -41,7 +41,6 @@ public class SuperArrayTest {
 		x.bubbleSort();
 		isSorted(x);
 	}
-
 	@Test
 	public void testGet() {
 		assertEquals("a", a.get(0));
@@ -64,6 +63,13 @@ public class SuperArrayTest {
 			fail("a.remove(2) should throw exception!");
 		} catch (IndexOutOfBoundsException e) {
 		}
+	}
+
+	@Test
+	public void testSelectionSort() {
+		SuperArray<Integer> x = getListToSort();
+		x.selectionSort();
+		isSorted(x);
 	}
 
 	@Test

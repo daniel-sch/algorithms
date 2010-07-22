@@ -82,6 +82,17 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		return (T) d;
 	}
 
+	public void selectionSort() {
+		for (int i = 0; i < size; i++) {
+			int cur = i;
+			for (int j = i + 1; j < size; j++) {
+				if (comp(cur, j) > 0)
+					cur = j;
+			}
+			swap(i, cur);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T set(int index, T element) {
@@ -116,5 +127,4 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		data[i1] = data[i2];
 		data[i2] = tmp;
 	}
-
 }
