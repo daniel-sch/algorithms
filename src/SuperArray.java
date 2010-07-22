@@ -70,6 +70,17 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		return (T) data[index];
 	}
 
+	public void insertionSort() {
+		for (int i = 0; i < size; i++) {
+			int j = binarySearch(0, i, i);
+			if (j != i) {
+				Object o = data[i];
+				System.arraycopy(data, j, data, j + 1, i - j);
+				data[j] = o;
+			}
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T remove(int index) {
@@ -107,6 +118,19 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 	@Override
 	public int size() {
 		return size;
+	}
+
+	private int binarySearch(int start, int end, int x) {
+		while (start < end) {
+			int middle = start + (end - start) / 2;
+			if (comp(middle, x) == 0)
+				return middle;
+			if (comp(middle, x) > 0)
+				end = middle;
+			else
+				start = middle + 1;
+		}
+		return end;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -9,50 +9,74 @@ public class PerformanceTest {
 		for (int i = 0; i < 10000; i++)
 			l.add(r.nextInt(1000000));
 
+		SuperArray<Integer> aBubble = new SuperArray<Integer>(l);
+		long aBubbleStart = System.currentTimeMillis();
+		aBubble.bubbleSort();
+		System.out.println("Bubblesort (Array): "
+				+ (System.currentTimeMillis() - aBubbleStart) + "ms");
+
+		SuperArray<Integer> aInsertion = new SuperArray<Integer>(l);
+		long aInsertionStart = System.currentTimeMillis();
+		aInsertion.insertionSort();
+		System.out.println("Insertionsort (Array): "
+				+ (System.currentTimeMillis() - aInsertionStart) + "ms");
+
+		SuperArray<Integer> aSelection = new SuperArray<Integer>(l);
+		long aSelectionStart = System.currentTimeMillis();
+		aSelection.selectionSort();
+		System.out.println("Selectionsort (Array): "
+				+ (System.currentTimeMillis() - aSelectionStart) + "ms");
+
 		SuperList<Integer> lBubble = new SuperList<Integer>(l);
-		long bubbleStart = System.currentTimeMillis();
+		long lBubbleStart = System.currentTimeMillis();
 		lBubble.bubbleSort();
-		System.out.println("Bubblesort: "
-				+ (System.currentTimeMillis() - bubbleStart) + "ms");
+		System.out.println("Bubblesort (Liste): "
+				+ (System.currentTimeMillis() - lBubbleStart) + "ms");
 
 		SuperList<Integer> lInsertion = new SuperList<Integer>(l);
-		long insertionStart = System.currentTimeMillis();
+		long lInsertionStart = System.currentTimeMillis();
 		lInsertion.insertionSort();
-		System.out.println("Insertionsort: "
-				+ (System.currentTimeMillis() - insertionStart) + "ms");
+		System.out.println("Insertionsort (Liste): "
+				+ (System.currentTimeMillis() - lInsertionStart) + "ms");
 
 		SuperList<Integer> lSelection = new SuperList<Integer>(l);
-		long selectionStart = System.currentTimeMillis();
+		long lSelectionStart = System.currentTimeMillis();
 		lSelection.selectionSort();
-		System.out.println("Selectionsort: "
-				+ (System.currentTimeMillis() - selectionStart) + "ms");
+		System.out.println("Selectionsort (Liste): "
+				+ (System.currentTimeMillis() - lSelectionStart) + "ms");
 
 		SuperList<Integer> lQuick = new SuperList<Integer>(l);
-		long quickStart = System.currentTimeMillis();
+		long lQuickStart = System.currentTimeMillis();
 		lQuick.quickSort();
-		System.out.println("Quicksort: "
-				+ (System.currentTimeMillis() - quickStart) + "ms");
+		System.out.println("Quicksort (Liste): "
+				+ (System.currentTimeMillis() - lQuickStart) + "ms");
 
 		SuperList<Integer> lMerge = new SuperList<Integer>(l);
-		long mergeStart = System.currentTimeMillis();
+		long lMergeStart = System.currentTimeMillis();
 		lMerge.mergeSort();
-		System.out.println("Mergesort: "
-				+ (System.currentTimeMillis() - mergeStart) + "ms");
+		System.out.println("Mergesort (Liste): "
+				+ (System.currentTimeMillis() - lMergeStart) + "ms");
 
 		long referenceStart = System.currentTimeMillis();
 		Collections.sort(l);
 		System.out.println("Referenzimplementierung: "
 				+ (System.currentTimeMillis() - referenceStart) + "ms");
 
-		if(!l.equals(lBubble))
+		if (!l.equals(aBubble))
 			System.out.println("Bubblesort failed!");
-		if(!l.equals(lInsertion))
+		if (!l.equals(aInsertion))
 			System.out.println("Insertionsort failed!");
-		if(!l.equals(lSelection))
+		if (!l.equals(aSelection))
 			System.out.println("Selectionsort failed!");
-		if(!l.equals(lQuick))
+		if (!l.equals(lBubble))
+			System.out.println("Bubblesort failed!");
+		if (!l.equals(lInsertion))
+			System.out.println("Insertionsort failed!");
+		if (!l.equals(lSelection))
+			System.out.println("Selectionsort failed!");
+		if (!l.equals(lQuick))
 			System.out.println("Quicksort failed!");
-		if(!l.equals(lMerge))
+		if (!l.equals(lMerge))
 			System.out.println("Mergesort failed!");
 	}
 }
