@@ -62,6 +62,13 @@ public class SuperArrayTest {
 	}
 
 	@Test
+	public void testQuickSort() {
+		SuperArray<Integer> x = getListToSort();
+		x.quickSort();
+		isSorted(x);
+	}
+
+	@Test
 	public void testRemove() {
 		assertEquals("b", a.remove(1));
 		assertEquals("[a, c]", a.toString());

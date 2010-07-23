@@ -72,13 +72,20 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 
 	public void insertionSort() {
 		for (int i = 0; i < size; i++) {
-			int j = binarySearch(0, i, i);
+			int j = binarySearch(0, i, data[i]);
 			if (j != i) {
 				Object o = data[i];
 				System.arraycopy(data, j, data, j + 1, i - j);
 				data[j] = o;
 			}
 		}
+	}
+
+	public void quickSort() {
+		if (size <= 1)
+			return;
+
+		quickSort_rec(0, size - 1);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -120,7 +127,7 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		return size;
 	}
 
-	private int binarySearch(int start, int end, int x) {
+	private int binarySearch(int start, int end, Object x) {
 		while (start < end) {
 			int middle = start + (end - start) / 2;
 			if (comp(middle, x) == 0)
@@ -138,12 +145,38 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		return ((Comparable<T>) data[i1]).compareTo((T) data[i2]);
 	}
 
+	@SuppressWarnings("unchecked")
+	private int comp(int i1, Object i2) {
+		return ((Comparable<T>) data[i1]).compareTo((T) i2);
+	}
+
 	private boolean compSwap(int i1, int i2) {
 		if (comp(i1, i2) > 0) {
 			swap(i1, i2);
 			return true;
 		}
 		return false;
+	}
+
+	private void quickSort_rec(int start, int end) {
+		swap(start + (end - start), end);
+		int i = start;
+		int j = end - 1;
+		Object pivot = data[end];
+		while (i < j) {
+			while (comp(i, pivot) < 0 && i < end)
+				i++;
+			while (comp(j, pivot) > 0 && j > start)
+				j--;
+			if (i < j)
+				swap(i, j);
+		}
+		if (comp(i, pivot) > 0)
+			swap(i, end);
+		if (start < i - 1)
+			quickSort_rec(start, i - 1);
+		if (i + 1 < end)
+			quickSort_rec(i + 1, end);
 	}
 
 	private void swap(int i1, int i2) {

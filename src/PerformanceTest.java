@@ -27,6 +27,12 @@ public class PerformanceTest {
 		System.out.println("Selectionsort (Array): "
 				+ (System.currentTimeMillis() - aSelectionStart) + "ms");
 
+		SuperArray<Integer> aQuick = new SuperArray<Integer>(l);
+		long aQuickStart = System.currentTimeMillis();
+		aQuick.quickSort();
+		System.out.println("Quicksort (Array): "
+				+ (System.currentTimeMillis() - aQuickStart) + "ms");
+
 		SuperList<Integer> lBubble = new SuperList<Integer>(l);
 		long lBubbleStart = System.currentTimeMillis();
 		lBubble.bubbleSort();
@@ -68,6 +74,8 @@ public class PerformanceTest {
 			System.out.println("Insertionsort failed!");
 		if (!l.equals(aSelection))
 			System.out.println("Selectionsort failed!");
+		if (!l.equals(aQuick))
+			System.out.println("Quicksort failed!");
 		if (!l.equals(lBubble))
 			System.out.println("Bubblesort failed!");
 		if (!l.equals(lInsertion))
