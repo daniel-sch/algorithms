@@ -7,6 +7,8 @@ import java.util.RandomAccess;
 public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		implements List<T>, RandomAccess {
 
+	private static final int INSERTIONSORT_THRESHOLD = 512;
+
 	private Object[] data;
 
 	private int size;
@@ -71,13 +73,37 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 	}
 
 	public void insertionSort() {
-		for (int i = 0; i < size; i++) {
-			int j = binarySearch(0, i, data[i]);
-			if (j != i) {
-				Object o = data[i];
-				System.arraycopy(data, j, data, j + 1, i - j);
-				data[j] = o;
+		insertionSort_int(0, size);
+	}
+
+	public void mergeSort() {
+		if (size <= 1)
+			return;
+
+		int i = 0;
+		while (i < size) {
+			insertionSort_int(i, Math.min(size, i + INSERTIONSORT_THRESHOLD));
+			i += INSERTIONSORT_THRESHOLD;
+		}
+
+		int diff = INSERTIONSORT_THRESHOLD;
+		while (diff < size) {
+			i = 0;
+			Object[] newData = new Object[size];
+			while (true) {
+				int newI = i + 2 * diff;
+				if (newI > size) {
+					if (i + diff < size)
+						merge(newData, i, size, diff);
+					else
+						System.arraycopy(data, i, newData, i, size - i);
+					break;
+				} else
+					merge(newData, i, newI, diff);
+				i = newI;
 			}
+			data = newData;
+			diff *= 2;
 		}
 	}
 
@@ -156,6 +182,37 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 			return true;
 		}
 		return false;
+	}
+
+	private void insertionSort_int(int start, int end) {
+		for (int i = start; i < end; i++) {
+			int j = binarySearch(start, i, data[i]);
+			if (j != i) {
+				Object o = data[i];
+				System.arraycopy(data, j, data, j + 1, i - j);
+				data[j] = o;
+			}
+		}
+	}
+
+	private void merge(Object[] dest, int start, int end, int diff) {
+		int middle = start + diff;
+		if (comp(middle - 1, middle) <= 0)
+			System.arraycopy(data, 0, dest, 0, size);
+		int i = start;
+		int j = middle;
+
+		int x = start;
+		while (i < middle && j < end) {
+			if (comp(i, j) < 0)
+				dest[x++] = data[i++];
+			else
+				dest[x++] = data[j++];
+		}
+		if (i < middle)
+			System.arraycopy(data, i, dest, x, middle - i);
+		else
+			System.arraycopy(data, j, dest, x, end - j);
 	}
 
 	private void quickSort_rec(int start, int end) {

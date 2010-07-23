@@ -62,6 +62,13 @@ public class SuperArrayTest {
 	}
 
 	@Test
+	public void testMergeSort() {
+		SuperArray<Integer> x = getListToSort();
+		x.mergeSort();
+		isSorted(x);
+	}
+
+	@Test
 	public void testQuickSort() {
 		SuperArray<Integer> x = getListToSort();
 		x.quickSort();
