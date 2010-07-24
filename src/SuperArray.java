@@ -72,6 +72,16 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		return (T) data[index];
 	}
 
+	public void heapSort() {
+		for (int k = size / 2; k >= 0; k--)
+			sink(k, size);
+
+		for (int n = size - 1; n > 0; n--) {
+			swap(0, n);
+			sink(0, n);
+		}
+	}
+
 	public void insertionSort() {
 		insertionSort_int(0, size);
 	}
@@ -234,6 +244,18 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 			quickSort_rec(start, i - 1);
 		if (i + 1 < end)
 			quickSort_rec(i + 1, end);
+	}
+
+	private void sink(int i, int size) {
+		while (2 * (i + 1) <= size) {
+			int j = 2 * (i + 1) - 1;
+			if (j < size - 1 && comp(j, j + 1) < 0)
+				j++;
+			if (comp(i, j) >= 0)
+				break;
+			swap(i, j);
+			i = j;
+		}
 	}
 
 	private void swap(int i1, int i2) {

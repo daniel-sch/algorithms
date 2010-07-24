@@ -17,6 +17,7 @@ public class PerformanceTest {
 		SuperArray<Integer> aSelection = new SuperArray<Integer>(l);
 		SuperArray<Integer> aQuick = new SuperArray<Integer>(l);
 		SuperArray<Integer> aMerge = new SuperArray<Integer>(l);
+		SuperArray<Integer> aHeap = new SuperArray<Integer>(l);
 		SuperList<Integer> lBubble = new SuperList<Integer>(l);
 		SuperList<Integer> lInsertion = new SuperList<Integer>(l);
 		SuperList<Integer> lSelection = new SuperList<Integer>(l);
@@ -65,6 +66,11 @@ public class PerformanceTest {
 		System.out.println("Mergesort (Array): "
 				+ (System.currentTimeMillis() - aMergeStart) + "ms");
 
+		long aHeapStart = System.currentTimeMillis();
+		aHeap.heapSort();
+		System.out.println("Heapsort (Array): "
+				+ (System.currentTimeMillis() - aHeapStart) + "ms");
+
 		long lQuickStart = System.currentTimeMillis();
 		lQuick.quickSort();
 		System.out.println("Quicksort (Liste): "
@@ -98,6 +104,8 @@ public class PerformanceTest {
 			System.out.println("Quicksort failed!");
 		if (!l.equals(aMerge))
 			System.out.println("Mergesort failed!");
+		if (!l.equals(aHeap))
+			System.out.println("Heapsort failed!");
 		if (!l.equals(lQuick))
 			System.out.println("Quicksort failed!");
 		if (!l.equals(lMerge))

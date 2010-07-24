@@ -55,6 +55,13 @@ public class SuperArrayTest {
 	}
 
 	@Test
+	public void testHeapSort() {
+		SuperArray<Integer> x = getListToSort();
+		x.heapSort();
+		isSorted(x);
+	}
+
+	@Test
 	public void testInsertionSort() {
 		SuperArray<Integer> x = getListToSort();
 		x.insertionSort();
@@ -118,7 +125,7 @@ public class SuperArrayTest {
 		assertEquals("[a, b, c]", a.toString());
 		assertEquals(3, a.size());
 	}
-	
+
 	@Test
 	public void testSuperArrayConstructor() {
 		a = new SuperArray<String>();
@@ -132,7 +139,7 @@ public class SuperArrayTest {
 			ret.add(r.nextInt(1000000));
 		return ret;
 	}
-	
+
 	private void isSorted(SuperArray<Integer> a) {
 		Object[] arr1 = a.toArray();
 		Object[] arr2 = a.toArray();
