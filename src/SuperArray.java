@@ -263,4 +263,17 @@ public class SuperArray<T extends Comparable<T>> extends AbstractList<T>
 		data[i1] = data[i2];
 		data[i2] = tmp;
 	}
+
+	public void shellSort() {
+		final int[] gaps = { 2147483647, 1131376761, 410151271, 157840433, 58548857,
+				21521774, 8810089, 3501671, 1355339, 543749, 213331, 84801,
+				27901, 11969, 4711, 1968, 815, 271, 111, 41, 13, 4, 1 };
+
+		for (int k = 0; k < gaps.length; k++) {
+			int gap = gaps[k];
+			for (int i = gap; i < size; i++)
+				for (int j = i; j >= gap && comp(j, j - gap) < 0; j -= gap)
+					swap(j, j - gap);
+		}
+	}
 }

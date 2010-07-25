@@ -114,6 +114,13 @@ public class SuperArrayTest {
 	}
 
 	@Test
+	public void testShellSort() {
+		SuperArray<Integer> x = getListToSort();
+		x.shellSort();
+		isSorted(x);
+	}
+
+	@Test
 	public void testSize() {
 		assertEquals(3, a.size());
 	}

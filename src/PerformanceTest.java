@@ -14,6 +14,7 @@ public class PerformanceTest {
 
 		SuperArray<Integer> aBubble = new SuperArray<Integer>(l);
 		SuperArray<Integer> aInsertion = new SuperArray<Integer>(l);
+		SuperArray<Integer> aShell = new SuperArray<Integer>(l);
 		SuperArray<Integer> aSelection = new SuperArray<Integer>(l);
 		SuperArray<Integer> aQuick = new SuperArray<Integer>(l);
 		SuperArray<Integer> aMerge = new SuperArray<Integer>(l);
@@ -55,6 +56,11 @@ public class PerformanceTest {
 			System.out.println("Selectionsort (Liste): "
 					+ (System.currentTimeMillis() - lSelectionStart) + "ms");
 		}
+
+		long aShellStart = System.currentTimeMillis();
+		aShell.shellSort();
+		System.out.println("Shellsort (Array): "
+				+ (System.currentTimeMillis() - aShellStart) + "ms");
 
 		long aQuickStart = System.currentTimeMillis();
 		aQuick.quickSort();
@@ -100,6 +106,8 @@ public class PerformanceTest {
 			if (!l.equals(lSelection))
 				System.out.println("Selectionsort failed!");
 		}
+		if (!l.equals(aShell))
+			System.out.println("Shellsort failed!");
 		if (!l.equals(aQuick))
 			System.out.println("Quicksort failed!");
 		if (!l.equals(aMerge))
